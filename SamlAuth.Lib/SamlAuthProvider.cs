@@ -22,6 +22,9 @@ namespace SamlAuth.Lib
         private const string AssertionURN = "urn:oasis:names:tc:SAML:2.0:assertion";
         private SamlConfig _config;
 
+        /// <summary>
+        /// Provides the idenity user name
+        /// </summary>
         public string Name
         {
             get;
@@ -33,7 +36,11 @@ namespace SamlAuth.Lib
             _config = trustedIssuer;
         }
 
-
+        /// <summary>
+        /// Validates the SAML Token
+        /// </summary>
+        /// <param name="saml"></param>
+        /// <returns>true if SAML is valid</returns>
         public bool Validate(string saml)
         {
             bool isValid = false;
@@ -61,12 +68,23 @@ namespace SamlAuth.Lib
             return isValid;
         }
 
+        /// <summary>
+        ///  Gets the identifier for the subject
+        /// </summary>
+        /// <param name="assertion"></param>
+        /// <returns></returns>
         protected string GetNameID(Saml2SecurityToken assertion)
         {
             string nameID = assertion.Assertion.Subject.NameId.Value;
             return nameID;
         }
 
+        /// <summary>
+        ///   Gets the identifier for the SAML authority that is making the claim(s)
+        //     in the assertion. [Saml2Core, 2.3.3]
+        /// </summary>
+        /// <param name="assertion"></param>
+        /// <returns></returns>
         protected string GetIssuer(Saml2SecurityToken assertion)
         {
             string issuervalue = assertion.Assertion.Issuer.Value;
@@ -74,7 +92,7 @@ namespace SamlAuth.Lib
         }
 
         /// <summary>
-        ///  There are sometimes multiple audiance URLs, this is typically application global, as long as one of the audiance urls exist then allow passage.         
+        /// Multiple audience can be validated. Check at least one audiance urls exist then allow passage.         
         /// </summary>
         /// <param name="assertion"></param>
         protected void ValidateAudiance(Saml2SecurityToken assertion)
@@ -130,7 +148,11 @@ namespace SamlAuth.Lib
             }
         }
 
-
+        /// <summary>
+        /// Deserialize the Assertion
+        /// </summary>
+        /// <param name="rawAssertion"></param>
+        /// <returns></returns>
         protected Saml2SecurityToken DeserializeAssertion(string rawAssertion)
         {
             Saml2SecurityToken assertion;
@@ -143,6 +165,11 @@ namespace SamlAuth.Lib
             return assertion;
         }
 
+        /// <summary>
+        /// Validate the assertion
+        /// </summary>
+        /// <param name="assertion"></param>
+        /// <returns></returns>
         protected ClaimsIdentity ValidateSamlToken(SecurityToken assertion)
         {
             Saml2PropertiesRemoval(assertion);
@@ -177,10 +204,7 @@ namespace SamlAuth.Lib
         }
 
         protected void Saml2PropertiesRemoval(SecurityToken St)
-        {
-            // Some of these we may want to implement, but signature validation is most important.  
-            // We can also do manual validation of these components.
-
+        {            
             var samlAssertion = St as Saml2SecurityToken;
             if (samlAssertion != null &&
                 samlAssertion.Assertion != null &&
