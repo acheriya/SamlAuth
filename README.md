@@ -1,5 +1,6 @@
 # SamlAuth
 This is the source code for the libray that can be used for validating the incoming SAML, Supports  OKTA, ADFS, ACS issued token validation
+SAML auth provider developed using C#
 
 Integrating with OKTA in ASP.NET MVC
 
